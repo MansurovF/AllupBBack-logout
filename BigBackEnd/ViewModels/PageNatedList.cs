@@ -4,27 +4,35 @@
     {
 
         public PageNatedList(IQueryable<T> query,int pageIndex, int totalCount) 
-        { 
-            PageIndex= pageIndex;
-            TotalCount= totalCount;
-
-            int start = PageIndex - 2;
-            int end = PageIndex + 2;
-
-            if (start <= 0)
+        {
+            if (totalCount < query.Count())
             {
-                end = end - (start - 1);
-                start = 1;
-            }
+                PageIndex = pageIndex;
+                TotalCount = totalCount;
 
-            if (end > TotalCount)
+                int start = PageIndex - 2;
+                int end = PageIndex + 2;
+
+                if (start <= 0)
+                {
+                    end = end - (start - 1);
+                    start = 1;
+                }
+
+                if (end > TotalCount)
+                {
+                    end = TotalCount;
+                    start = TotalCount - 4;
+                }
+
+                StartPage = start;
+                EndPage = end;
+            }
+            else
             {
-                end = TotalCount;
-                start = TotalCount - 4;
+                StartPage= 1;
+                EndPage= totalCount;    
             }
-
-            StartPage= start;
-            EndPage= end;
             
             this.AddRange(query);
         }
